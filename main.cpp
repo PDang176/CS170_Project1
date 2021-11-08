@@ -5,22 +5,24 @@
 #include <cmath>
 #include <iterator>
 #include <unordered_set>
+#include <algorithm>
 
 using namespace std;
 
-string select_default_puzzle();
-void select_algorithm(string, int);
-void search_algorithm(string, int, int);
-int calculate_f(string, int, int);
-int calculate_h(string, int, int);
-vector<vector<int>> string_to_blocks(string, int);
-bool check_success(string, int);
-vector<string> generate_nodes(string, int);
-void print_puzzle(string, int);
+string select_default_puzzle(); // Select one of the 8 default puzzles
+void select_algorithm(string, int); // Select which algorithm to use (Uniform Cost Search, Misplaced Tile, Manhattan Distance)
+void search_algorithm(string, int, int); // Run the algorithm selected with the chosen/created puzzle
+int calculate_f(string, int, int); // Calculate the f cost of current puzzle state
+int calculate_h(string, int, int); // Calculate the h cost of current puzzle state
+vector<vector<int>> string_to_blocks(string, int); // Convert the puzzle from its string notation to a 2d vector
+bool check_success(string, int); // Check if the puzzle has reached its goal state
+vector<string> generate_nodes(string, int); // Generate all the possible nodes of the current puzzle
+void print_puzzle(string, int); // Print the puzzle onto the screen
 
 const vector<string> default_puzzles{
     "0,1 2 3 4 5 6 7 8 0",
     "0,1 2 3 4 5 6 0 7 8",
+    "0,1 2 3 5 0 6 4 7 8",
     "0,1 3 6 5 0 2 4 7 8",
     "0,1 3 6 5 0 7 4 8 2",
     "0,1 6 7 5 0 3 4 8 2",
@@ -113,6 +115,10 @@ void search_algorithm(string puzzle, int algorithm, int dim){
 
     string node;
 
+    int depth = 0;
+    int max_nodes = 1;
+    int max_queue = nodes.size();
+
     while(1){
         if(nodes.empty()){
             cout << "FAILURE" << endl;
@@ -120,15 +126,20 @@ void search_algorithm(string puzzle, int algorithm, int dim){
         }
         node = nodes.top();
         nodes.pop();
+        
+        int g_end = node.find(',');
+        
+        depth = max(stoi(node.substr(0, g_end)), depth); // Update depth (Same as max g_cost)
 
         print_puzzle(node, dim);
 
         if(check_success(node, dim)){
-            cout << "SUCCESS" << endl;
+            cout << "SUCCESS" << endl << endl;
+            cout << "Depth: " << depth << endl;
+            cout << "Nodes Expanded: " << max_nodes << endl;
+            cout << "Maximum Queue Size: " << max_queue << endl;
             break;
         }
-
-        int g_end = node.find(',');
 
         seen.insert(node.substr(g_end + 1));
 
@@ -140,9 +151,12 @@ void search_algorithm(string puzzle, int algorithm, int dim){
                 int g = stoi(node.substr(0, g_end)) + 1;
                 new_node += to_string(g) + ',' + new_nodes[i];
                 nodes.push(new_node);
+                max_nodes++; // Increment number of nodes expanded
             }
             new_node.clear();
         }
+
+        max_queue = max((int)nodes.size(), max_queue); // Update max_queue size
     }
 }
 

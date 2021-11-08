@@ -76,6 +76,18 @@ int main(){
 }
 
 string select_default_puzzle(){
+    int selection;
+
+    cout << "Select a difficulty from 0 - 7 (Any other selection chooses '0'): ";
+    cin >> selection;
+    cout << endl;
+
+    if(selection < 0 && selection > 7){
+        return default_puzzles[0];
+    }
+    
+    return default_puzzles[selection];
+}
     
     
 void select_algorithm(string puzzle, int dim){

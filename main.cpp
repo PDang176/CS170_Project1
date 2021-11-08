@@ -1,3 +1,5 @@
+// https://github.com/PDang176/CS170_Project1
+
 #include <iostream>
 #include <string>
 #include <queue>
@@ -76,19 +78,8 @@ int main(){
 }
 
 string select_default_puzzle(){
-    int selection;
-
-    cout << "Select a difficulty from 0 - 7 (Any other selection chooses '0'): ";
-    cin >> selection;
-    cout << endl;
-
-    if(selection < 0 && selection > 7){
-        return default_puzzles[0];
-    }
     
-    return default_puzzles[selection];
-}
-
+    
 void select_algorithm(string puzzle, int dim){
     cout << "1) Uniform Cost Search" << endl;
     cout << "2) A* with Misplaced Tile Heuristic" << endl;
